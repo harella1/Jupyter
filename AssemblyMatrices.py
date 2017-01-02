@@ -37,10 +37,10 @@ for item in alltypes:
 
 Interfaces = {}
 Dependencies = {}
-for pattern in d:
-    x = d[pattern].Structors
-    if len(x) == 0:
+for pattern in d:    
+    if len(d[pattern].Interfaces) == 0:
         continue
+    x = d[pattern].Structors
     y = list(set(d[pattern].Functionals))
     Interfaces[pattern] = np.zeros((len(x),len(y)), dtype=np.int)
     Dependencies[pattern] = np.zeros((len(x),len(y)), dtype=np.int)
@@ -50,9 +50,9 @@ for pattern in d:
         if method in y and item in x:
             Dependencies[pattern][x.index(item),y.index(method)] = 1
 
-    fig = plt.figure(figsize = (len(x)+1,len(y)))
+    fig = plt.figure(figsize = (len(y),len(x)))
     fig.suptitle(pattern, fontsize=18)           
-    gs = matplotlib.gridspec.GridSpec(nrows=2,ncols=1,left=0.3)
+    gs = matplotlib.gridspec.GridSpec(nrows=2,ncols=1,right=0.98)
 
     vals = Interfaces[pattern]*-100+300
 
@@ -60,7 +60,7 @@ for pattern in d:
     ax1.axis('off')
     ax1.set_title('Interfaces')
     the_table = ax1.table(cellText=Interfaces[pattern], loc='center',cellLoc='center',rowLabels=x, colLabels=y,cellColours=plt.cm.hot(vals))
-    #the_table.scale(1.5, 1.5)
+    [the_table._cells[(i,0)].set_width(0.1) for i in range(0,len(x))]
 
     vals = Dependencies[pattern]*-100+300
     ax2 = fig.add_subplot(gs[1])
@@ -69,5 +69,6 @@ for pattern in d:
     the_table = ax2.table(cellText=Dependencies[pattern], loc='center',cellLoc='center',rowLabels=x, colLabels=y,cellColours=plt.cm.hot(vals))
     #the_table.scale(1.5, 1.5)
     #fig.subplots_adjust(left=0.3),colWidths=[0.15]*len(y),colWidths=[0.15]*len(y)
+    plt.show()
     plt.savefig(pattern+'.pdf')
 
